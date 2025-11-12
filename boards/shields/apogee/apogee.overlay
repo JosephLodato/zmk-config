@@ -1,0 +1,61 @@
+/* SPDX-License-Identifier: MIT */
+
+ / {
+    chosen {
+        zmk,keyboard = &kscan0;
+    };
+};
+
+/* ---------- I2C0: MCP23017 only (no OLED yet) ---------- */
+&i2c0 {
+    status = "okay";
+    sda-pin = <26>;                 /* Nice!Nano default SDA (P0.26) */
+    scl-pin = <27>;                 /* Nice!Nano default SCL (P0.27) */
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+
+    mcp0: mcp23017@20 {
+        compatible = "microchip,mcp23017";
+        reg = <0x20>;               /* Adjust if you changed A0/A1/A2 */
+        gpio-controller;
+        #gpio-cells = <2>;
+        status = "okay";
+    };
+};
+
+/* ---------- Simple 5x16 matrix: rows on MCU, cols on MCP ---------- */
+&gpio0 {
+    status = "okay";
+};
+
+/* Diodes COL->ROW, rows are driven by MCU, cols read via MCP23017.
+   Row pins from your schematic: P0.05..P0.09 */
+kscan0: kscan@0 {
+    compatible = "zmk,kscan-gpio-matrix";
+    label = "KSCAN";
+    diode-direction = "col2row";
+
+    /* ROW0..ROW4 = P0.05, .06, .07, .08, .09 */
+    row-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>,
+                <&gpio0 6 GPIO_ACTIVE_HIGH>,
+                <&gpio0 7 GPIO_ACTIVE_HIGH>,
+                <&gpio0 8 GPIO_ACTIVE_HIGH>,
+                <&gpio0 9 GPIO_ACTIVE_HIGH>;
+
+    /* 16 columns on the MCP23017: GPB0..7 then GPA0..7 (per your schematic) */
+    col-gpios = <&mcp0 0 GPIO_ACTIVE_LOW>,   /* GPB0 -> Col1  */
+                <&mcp0 1 GPIO_ACTIVE_LOW>,   /* GPB1 -> Col2  */
+                <&mcp0 2 GPIO_ACTIVE_LOW>,   /* GPB2 -> Col3  */
+                <&mcp0 3 GPIO_ACTIVE_LOW>,   /* GPB3 -> Col4  */
+                <&mcp0 4 GPIO_ACTIVE_LOW>,   /* GPB4 -> Col5  */
+                <&mcp0 5 GPIO_ACTIVE_LOW>,   /* GPB5 -> Col6  */
+                <&mcp0 6 GPIO_ACTIVE_LOW>,   /* GPB6 -> Col7  */
+                <&mcp0 7 GPIO_ACTIVE_LOW>,   /* GPB7 -> Col8  */
+                <&mcp0 8 GPIO_ACTIVE_LOW>,   /* GPA0 -> Col9  */
+                <&mcp0 9 GPIO_ACTIVE_LOW>,   /* GPA1 -> Col10 */
+                <&mcp0 10 GPIO_ACTIVE_LOW>,  /* GPA2 -> Col11 */
+                <&mcp0 11 GPIO_ACTIVE_LOW>,  /* GPA3 -> Col12 */
+                <&mcp0 12 GPIO_ACTIVE_LOW>,  /* GPA4 -> Col13 */
+                <&mcp0 13 GPIO_ACTIVE_LOW>,  /* GPA5 -> Col14 */
+                <&mcp0 14 GPIO_ACTIVE_LOW>,  /* GPA6 -> Col15 */
+                <&mcp0 15 GPIO_ACTIVE_LOW>;  /* GPA7 -> Col16 */
+};
