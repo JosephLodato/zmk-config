@@ -1,61 +1,86 @@
 /* SPDX-License-Identifier: MIT */
 
- / {
+/ {
     chosen {
         zmk,keyboard = &kscan0;
     };
 };
 
-/* ---------- I2C0: MCP23017 only (no OLED yet) ---------- */
+/* ===================== I2C0: MCP23017 (and OLED later) ===================== */
 &i2c0 {
     status = "okay";
-    sda-pin = <26>;                 /* Nice!Nano default SDA (P0.26) */
-    scl-pin = <27>;                 /* Nice!Nano default SCL (P0.27) */
+
+    /* You wired SDA/SCL to P0.06 and P0.08 */
+    sda-pin = <6>;   /* P0.06 */
+    scl-pin = <8>;   /* P0.08 */
+
     clock-frequency = <I2C_BITRATE_STANDARD>;
 
     mcp0: mcp23017@20 {
         compatible = "microchip,mcp23017";
-        reg = <0x20>;               /* Adjust if you changed A0/A1/A2 */
+        reg = <0x20>;           /* A0/A1/A2 all GND -> 0x20 */
         gpio-controller;
         #gpio-cells = <2>;
         status = "okay";
     };
+
+    /* We can add the SSD1306 node here later when we enable the display */
 };
 
-/* ---------- Simple 5x16 matrix: rows on MCU, cols on MCP ---------- */
+/* ===================== GPIO controllers ===================== */
+
 &gpio0 {
     status = "okay";
 };
 
-/* Diodes COL->ROW, rows are driven by MCU, cols read via MCP23017.
-   Row pins from your schematic: P0.05..P0.09 */
+&gpio1 {
+    status = "okay";
+};
+
+/* ===================== Keyboard Matrix: 5 rows × 16 cols ===================== */
+/*
+ * Wiring from your notes:
+ *  Rows:
+ *    Row1 -> P0.17
+ *    Row2 -> P0.20
+ *    Row3 -> P0.22
+ *    Row4 -> P0.24
+ *    Row5 -> P1.00
+ *
+ *  Cols:
+ *    MCP23017 pins 1-8   (GPB0..GPB7)  -> Col1..Col8
+ *              pins 21-28 (GPA0..GPA7) -> Col9..Col16
+ *
+ *  Diodes: COL -> ROW  (COL2ROW)
+ */
+
 kscan0: kscan@0 {
     compatible = "zmk,kscan-gpio-matrix";
     label = "KSCAN";
     diode-direction = "col2row";
 
-    /* ROW0..ROW4 = P0.05, .06, .07, .08, .09 */
-    row-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>,
-                <&gpio0 6 GPIO_ACTIVE_HIGH>,
-                <&gpio0 7 GPIO_ACTIVE_HIGH>,
-                <&gpio0 8 GPIO_ACTIVE_HIGH>,
-                <&gpio0 9 GPIO_ACTIVE_HIGH>;
+    /* Rows are inputs with pull-ups, active low */
+    row-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row1, P0.17 */
+                <&gpio0 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row2, P0.20 */
+                <&gpio0 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row3, P0.22 */
+                <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row4, P0.24 */
+                <&gpio1 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  /* Row5, P1.00 */
 
-    /* 16 columns on the MCP23017: GPB0..7 then GPA0..7 (per your schematic) */
-    col-gpios = <&mcp0 0 GPIO_ACTIVE_LOW>,   /* GPB0 -> Col1  */
-                <&mcp0 1 GPIO_ACTIVE_LOW>,   /* GPB1 -> Col2  */
-                <&mcp0 2 GPIO_ACTIVE_LOW>,   /* GPB2 -> Col3  */
-                <&mcp0 3 GPIO_ACTIVE_LOW>,   /* GPB3 -> Col4  */
-                <&mcp0 4 GPIO_ACTIVE_LOW>,   /* GPB4 -> Col5  */
-                <&mcp0 5 GPIO_ACTIVE_LOW>,   /* GPB5 -> Col6  */
-                <&mcp0 6 GPIO_ACTIVE_LOW>,   /* GPB6 -> Col7  */
-                <&mcp0 7 GPIO_ACTIVE_LOW>,   /* GPB7 -> Col8  */
-                <&mcp0 8 GPIO_ACTIVE_LOW>,   /* GPA0 -> Col9  */
-                <&mcp0 9 GPIO_ACTIVE_LOW>,   /* GPA1 -> Col10 */
-                <&mcp0 10 GPIO_ACTIVE_LOW>,  /* GPA2 -> Col11 */
-                <&mcp0 11 GPIO_ACTIVE_LOW>,  /* GPA3 -> Col12 */
-                <&mcp0 12 GPIO_ACTIVE_LOW>,  /* GPA4 -> Col13 */
-                <&mcp0 13 GPIO_ACTIVE_LOW>,  /* GPA5 -> Col14 */
-                <&mcp0 14 GPIO_ACTIVE_LOW>,  /* GPA6 -> Col15 */
-                <&mcp0 15 GPIO_ACTIVE_LOW>;  /* GPA7 -> Col16 */
+    /* Columns are driven by MCP23017; active low matches COL2ROW scanning */
+    col-gpios = <&mcp0 0  GPIO_ACTIVE_LOW>,  /* Col1  = GPB0, pin 1 */
+                <&mcp0 1  GPIO_ACTIVE_LOW>,  /* Col2  = GPB1, pin 2 */
+                <&mcp0 2  GPIO_ACTIVE_LOW>,  /* Col3  = GPB2, pin 3 */
+                <&mcp0 3  GPIO_ACTIVE_LOW>,  /* Col4  = GPB3, pin 4 */
+                <&mcp0 4  GPIO_ACTIVE_LOW>,  /* Col5  = GPB4, pin 5 */
+                <&mcp0 5  GPIO_ACTIVE_LOW>,  /* Col6  = GPB5, pin 6 */
+                <&mcp0 6  GPIO_ACTIVE_LOW>,  /* Col7  = GPB6, pin 7 */
+                <&mcp0 7  GPIO_ACTIVE_LOW>,  /* Col8  = GPB7, pin 8 */
+                <&mcp0 8  GPIO_ACTIVE_LOW>,  /* Col9  = GPA0, pin 21 */
+                <&mcp0 9  GPIO_ACTIVE_LOW>,  /* Col10 = GPA1, pin 22 */
+                <&mcp0 10 GPIO_ACTIVE_LOW>,  /* Col11 = GPA2, pin 23 */
+                <&mcp0 11 GPIO_ACTIVE_LOW>,  /* Col12 = GPA3, pin 24 */
+                <&mcp0 12 GPIO_ACTIVE_LOW>,  /* Col13 = GPA4, pin 25 */
+                <&mcp0 13 GPIO_ACTIVE_LOW>,  /* Col14 = GPA5, pin 26 */
+                <&mcp0 14 GPIO_ACTIVE_LOW>,  /* Col15 = GPA6, pin 27 */
+                <&mcp0 15 GPIO_ACTIVE_LOW>;  /* Col16 = GPA7, pin 28 */
 };
