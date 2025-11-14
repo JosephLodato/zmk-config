@@ -1,8 +1,11 @@
 /* SPDX-License-Identifier: MIT */
 
+#include <dt-bindings/zmk/matrix_transform.h>
+
 / {
+    /* Tell ZMK which physical layout to use */
     chosen {
-        zmk,keyboard = &kscan0;
+        zmk,physical-layout = &physical_layout0;
     };
 };
 
@@ -10,7 +13,7 @@
 &i2c0 {
     status = "okay";
 
-    /* You wired SDA/SCL to P0.06 and P0.08 */
+    /* You wired SDA/SCL to P0.06 (D1) and P0.08 (D0) on nice!nano v2 */
     sda-pin = <6>;   /* P0.06 */
     scl-pin = <8>;   /* P0.08 */
 
@@ -24,7 +27,7 @@
         status = "okay";
     };
 
-    /* We can add the SSD1306 node here later when we enable the display */
+    /* OLED node will go here later */
 };
 
 /* ===================== GPIO controllers ===================== */
@@ -52,35 +55,82 @@
  *              pins 21-28 (GPA0..GPA7) -> Col9..Col16
  *
  *  Diodes: COL -> ROW  (COL2ROW)
+ *
+ *  For COL2ROW:
+ *    - columns = outputs   => GPIO_ACTIVE_HIGH
+ *    - rows    = inputs    => GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN
+ *      (docs: https://zmk.dev/docs/config/kscan)
  */
 
-kscan0: kscan@0 {
+kscan0: kscan0 {
     compatible = "zmk,kscan-gpio-matrix";
     label = "KSCAN";
     diode-direction = "col2row";
+    wakeup-source;
 
-    /* Rows are inputs with pull-ups, active low */
-    row-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row1, P0.17 */
-                <&gpio0 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row2, P0.20 */
-                <&gpio0 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row3, P0.22 */
-                <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,  /* Row4, P0.24 */
-                <&gpio1 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  /* Row5, P1.00 */
+    /* Row inputs */
+    row-gpios = <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* Row1, P0.17 */
+                <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* Row2, P0.20 */
+                <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* Row3, P0.22 */
+                <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* Row4, P0.24 */
+                <&gpio1 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;  /* Row5, P1.00 */
 
-    /* Columns are driven by MCP23017; active low matches COL2ROW scanning */
-    col-gpios = <&mcp0 0  GPIO_ACTIVE_LOW>,  /* Col1  = GPB0, pin 1 */
-                <&mcp0 1  GPIO_ACTIVE_LOW>,  /* Col2  = GPB1, pin 2 */
-                <&mcp0 2  GPIO_ACTIVE_LOW>,  /* Col3  = GPB2, pin 3 */
-                <&mcp0 3  GPIO_ACTIVE_LOW>,  /* Col4  = GPB3, pin 4 */
-                <&mcp0 4  GPIO_ACTIVE_LOW>,  /* Col5  = GPB4, pin 5 */
-                <&mcp0 5  GPIO_ACTIVE_LOW>,  /* Col6  = GPB5, pin 6 */
-                <&mcp0 6  GPIO_ACTIVE_LOW>,  /* Col7  = GPB6, pin 7 */
-                <&mcp0 7  GPIO_ACTIVE_LOW>,  /* Col8  = GPB7, pin 8 */
-                <&mcp0 8  GPIO_ACTIVE_LOW>,  /* Col9  = GPA0, pin 21 */
-                <&mcp0 9  GPIO_ACTIVE_LOW>,  /* Col10 = GPA1, pin 22 */
-                <&mcp0 10 GPIO_ACTIVE_LOW>,  /* Col11 = GPA2, pin 23 */
-                <&mcp0 11 GPIO_ACTIVE_LOW>,  /* Col12 = GPA3, pin 24 */
-                <&mcp0 12 GPIO_ACTIVE_LOW>,  /* Col13 = GPA4, pin 25 */
-                <&mcp0 13 GPIO_ACTIVE_LOW>,  /* Col14 = GPA5, pin 26 */
-                <&mcp0 14 GPIO_ACTIVE_LOW>,  /* Col15 = GPA6, pin 27 */
-                <&mcp0 15 GPIO_ACTIVE_LOW>;  /* Col16 = GPA7, pin 28 */
+    /* Column outputs on MCP23017 */
+    col-gpios = <&mcp0 0  GPIO_ACTIVE_HIGH>,  /* Col1  = GPB0, pin 1 */
+                <&mcp0 1  GPIO_ACTIVE_HIGH>,  /* Col2  = GPB1, pin 2 */
+                <&mcp0 2  GPIO_ACTIVE_HIGH>,  /* Col3  = GPB2, pin 3 */
+                <&mcp0 3  GPIO_ACTIVE_HIGH>,  /* Col4  = GPB3, pin 4 */
+                <&mcp0 4  GPIO_ACTIVE_HIGH>,  /* Col5  = GPB4, pin 5 */
+                <&mcp0 5  GPIO_ACTIVE_HIGH>,  /* Col6  = GPB5, pin 6 */
+                <&mcp0 6  GPIO_ACTIVE_HIGH>,  /* Col7  = GPB6, pin 7 */
+                <&mcp0 7  GPIO_ACTIVE_HIGH>,  /* Col8  = GPB7, pin 8 */
+                <&mcp0 8  GPIO_ACTIVE_HIGH>,  /* Col9  = GPA0, pin 21 */
+                <&mcp0 9  GPIO_ACTIVE_HIGH>,  /* Col10 = GPA1, pin 22 */
+                <&mcp0 10 GPIO_ACTIVE_HIGH>,  /* Col11 = GPA2, pin 23 */
+                <&mcp0 11 GPIO_ACTIVE_HIGH>,  /* Col12 = GPA3, pin 24 */
+                <&mcp0 12 GPIO_ACTIVE_HIGH>,  /* Col13 = GPA4, pin 25 */
+                <&mcp0 13 GPIO_ACTIVE_HIGH>,  /* Col14 = GPA5, pin 26 */
+                <&mcp0 14 GPIO_ACTIVE_HIGH>,  /* Col15 = GPA6, pin 27 */
+                <&mcp0 15 GPIO_ACTIVE_HIGH>;  /* Col16 = GPA7, pin 28 */
+};
+
+/* ===================== Matrix Transform ===================== */
+/* Simple 1:1 mapping: row-major, 5 rows × 16 cols */
+
+default_transform: keymap_transform0 {
+    compatible = "zmk,matrix-transform";
+    rows = <5>;
+    columns = <16>;
+
+    /* RC(row, col) – this is in keymap order, row by row */
+    map = <
+        /* Row 0: ESC 1 2 3 ... etc */
+        RC(0,0)  RC(0,1)  RC(0,2)  RC(0,3)  RC(0,4)  RC(0,5)  RC(0,6)  RC(0,7)
+        RC(0,8)  RC(0,9)  RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14) RC(0,15)
+
+        /* Row 1 */
+        RC(1,0)  RC(1,1)  RC(1,2)  RC(1,3)  RC(1,4)  RC(1,5)  RC(1,6)  RC(1,7)
+        RC(1,8)  RC(1,9)  RC(1,10) RC(1,11) RC(1,12) RC(1,13) RC(1,14) RC(1,15)
+
+        /* Row 2 */
+        RC(2,0)  RC(2,1)  RC(2,2)  RC(2,3)  RC(2,4)  RC(2,5)  RC(2,6)  RC(2,7)
+        RC(2,8)  RC(2,9)  RC(2,10) RC(2,11) RC(2,12) RC(2,13) RC(2,14) RC(2,15)
+
+        /* Row 3 */
+        RC(3,0)  RC(3,1)  RC(3,2)  RC(3,3)  RC(3,4)  RC(3,5)  RC(3,6)  RC(3,7)
+        RC(3,8)  RC(3,9)  RC(3,10) RC(3,11) RC(3,12) RC(3,13) RC(3,14) RC(3,15)
+
+        /* Row 4 */
+        RC(4,0)  RC(4,1)  RC(4,2)  RC(4,3)  RC(4,4)  RC(4,5)  RC(4,6)  RC(4,7)
+        RC(4,8)  RC(4,9)  RC(4,10) RC(4,11) RC(4,12) RC(4,13) RC(4,14) RC(4,15)
+    >;
+};
+
+/* ===================== Physical Layout ===================== */
+
+physical_layout0: physical_layout_0 {
+    compatible = "zmk,physical-layout";
+    display-name = "Apogee Default";
+    kscan = <&kscan0>;
+    transform = <&default_transform>;
 };
