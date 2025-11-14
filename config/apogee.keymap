@@ -27,10 +27,11 @@
             /* Row 3 */
             &kp LSHFT &kp Z    &kp X    &kp C    &kp V    &kp B    &kp N    &kp M
             &kp COMMA &kp DOT  &kp FSLH &kp RSHFT &kp UP  &none    &none    &none
-
+            
             /* Row 4 */
-            &kp LCTRL &kp LGUI &kp LALT &none    &none    &kp SPACE &kp FN   &kp RALT
-            &kp RGUI  &kp RCTRL &kp LEFT &kp DOWN &kp RIGHT &none   &none    &none
+            &kp LCTRL &kp LGUI &kp LALT &none    &none    &kp SPACE &mo 1  &kp RALT
+            &kp RGUI  &kp RCTRL &kp LEFT &kp DOWN &kp RIGHT &none   &none  &none
+
             >;
         };
     };
