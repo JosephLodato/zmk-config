@@ -20,4 +20,5 @@
 ---
 include:
   - board: nice_nano_v2
-    shield: nibble
+    shield: apogee
+    artifact-name: apogee
