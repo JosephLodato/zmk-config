@@ -4,12 +4,10 @@
 
 / {
     chosen {
-        /* Tell ZMK which kscan + transform to use */
         zmk,kscan = &kscan0;
         zmk,matrix-transform = &apogee_transform;
     };
 
-    /* 5×16 matrix transform, row-major, matches your keymap order */
     apogee_transform: apogee_transform {
         compatible = "zmk,matrix-transform";
         rows = <5>;
@@ -39,7 +37,7 @@
     };
 };
 
-/* Ensure the GPIO controllers are enabled */
+/* Make sure both GPIO ports are enabled */
 &gpio0 {
     status = "okay";
 };
@@ -48,13 +46,12 @@
     status = "okay";
 };
 
-/* MCP23017 on I2C0 @ 0x20 (pins for I2C0 are set in nice_nano_v2.overlay) */
+/* MCP23017 on I2C0 @ 0x20 (I2C pins set in boards/nice_nano_v2.overlay) */
 &i2c0 {
     status = "okay";
 
     mcp23017: mcp23017@20 {
-        /* Use the generic binding for this Zephyr version */
-        compatible = "microchip,mcp230xx";
+        compatible = "microchip,mcp23017";
         reg = <0x20>;
 
         gpio-controller;
@@ -66,15 +63,15 @@
     };
 };
 
-/* Keyboard scan node: 5 rows on MCU, 16 cols on MCP23017 */
+/* Keyboard matrix scan: 5 rows on MCU, 16 columns on MCP23017 */
 kscan0: kscan0 {
     compatible = "zmk,kscan-gpio-matrix";
     label = "APOGEE_KSCAN";
 
-    /* Assume diodes are COL2ROW: columns drive, rows read */
+    /* We’ll start with col2row since that matches your diode assumption */
     diode-direction = "col2row";
 
-    /* Columns on MCP23017: GPA0–7 + GPB0–7 = 0–15 */
+    /* Columns: MCP23017 GPA0–7, GPB0–7 → indices 0–15 */
     col-gpios =
         <&mcp23017 0  GPIO_ACTIVE_HIGH>,
         <&mcp23017 1  GPIO_ACTIVE_HIGH>,
@@ -94,11 +91,11 @@ kscan0: kscan0 {
         <&mcp23017 15 GPIO_ACTIVE_HIGH>;
 
     /* Rows on the nice!nano v2:
-     *   Row1 = P0.17
-     *   Row2 = P0.20
-     *   Row3 = P0.22
-     *   Row4 = P0.24
-     *   Row5 = P1.00
+     *  Row1 = P0.17
+     *  Row2 = P0.20
+     *  Row3 = P0.22
+     *  Row4 = P0.24
+     *  Row5 = P1.00
      */
     row-gpios =
         <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
