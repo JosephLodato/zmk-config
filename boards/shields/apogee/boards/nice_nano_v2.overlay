@@ -1,0 +1,9 @@
+/* boards/shields/apogee/boards/nice_nano_v2.overlay */
+
+&i2c0 {
+    /* Use D1/D0 pins as I²C, matching your PCB
+     * P0.06 -> SDA, P0.08 -> SCL
+     */
+    sda-pin = <6>;   /* P0.06 */
+    scl-pin = <8>;   /* P0.08 */
+};
