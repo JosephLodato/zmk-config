@@ -1,9 +1,24 @@
 /* boards/shields/apogee/boards/nice_nano_v2.overlay */
 
+/*
+ * Move I2C0 to the pins you wired:
+ *   SDA = P0.06
+ *   SCL = P0.08
+ */
+
+&pinctrl {
+    i2c0_apogee: i2c0_apogee {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 8)>;
+        };
+    };
+};
+
 &i2c0 {
-    /* Use D1/D0 pins as I²C, matching your PCB
-     * P0.06 -> SDA, P0.08 -> SCL
-     */
-    sda-pin = <6>;   /* P0.06 */
-    scl-pin = <8>;   /* P0.08 */
+    status = "okay";
+
+    pinctrl-0 = <&i2c0_apogee>;
+    pinctrl-1 = <&i2c0_apogee>;
+    pinctrl-names = "default", "sleep";
 };
