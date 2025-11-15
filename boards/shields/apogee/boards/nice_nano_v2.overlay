@@ -1,3 +1,5 @@
+/* boards/shields/apogee/boards/nice_nano_v2.overlay */
+
 &pinctrl {
     i2c0_apogee: i2c0_apogee {
         group1 {
