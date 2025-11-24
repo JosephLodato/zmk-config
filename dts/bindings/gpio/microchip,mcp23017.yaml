@@ -1,0 +1,31 @@
+# Microchip MCP23017 I2C GPIO expander binding for ZMK
+
+description: >
+  Microchip MCP23017 16-bit I2C GPIO expander used as a GPIO controller.
+
+compatible: "microchip,mcp23017"
+
+# Reuse common GPIO controller + I2C device definitions
+include:
+  - gpio-controller.yaml
+  - i2c-device.yaml
+
+properties:
+  label:
+    type: string
+    required: true
+    description: Human readable name for this MCP23017 instance.
+
+  "#gpio-cells":
+    const: 2
+    description: Number of cells in a GPIO specifier.
+
+  ngpios:
+    type: int
+    required: true
+    const: 16
+    description: Number of GPIOs provided by the expander.
+
+gpio-cells:
+  - pin
+  - flags
