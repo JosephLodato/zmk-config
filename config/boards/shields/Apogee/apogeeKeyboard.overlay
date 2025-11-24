@@ -28,47 +28,55 @@
     };
 
     /* GPIO matrix scanner using MCP23017 rows + nice!nano columns */
+    / {
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN";
 
-        diode-direction = "col2row";
+        diode-direction = "row2col";
 
-        /* Placeholder: 6 rows on MCP23017 pins 0–5 */
-        row-gpios = <&mcp23017 0 GPIO_ACTIVE_LOW>,
-                    <&mcp23017 1 GPIO_ACTIVE_LOW>,
-                    <&mcp23017 2 GPIO_ACTIVE_LOW>,
-                    <&mcp23017 3 GPIO_ACTIVE_LOW>,
-                    <&mcp23017 4 GPIO_ACTIVE_LOW>,
-                    <&mcp23017 5 GPIO_ACTIVE_LOW>;
+        /* Example: columns on nice!nano pins */
+        col-gpios =
+            <&gpio0  2 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0 29 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0 31 (GPIO_ACTIVE_HIGH)>,
+            <&gpio1 15 (GPIO_ACTIVE_HIGH)>,
+            <&gpio1 13 (GPIO_ACTIVE_HIGH)>,
+            <&gpio1 11 (GPIO_ACTIVE_HIGH)>,
+            <&gpio1 10 (GPIO_ACTIVE_HIGH)>,
+            <&gpio1  9 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0  6 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0  8 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0 17 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0 20 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0 22 (GPIO_ACTIVE_HIGH)>,
+            <&gpio0 24 (GPIO_ACTIVE_HIGH)>;
 
-        /* Placeholder: 14 columns on nRF GPIO0 pins P0.02–P0.15 */
-        col-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-                    <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        /* Example: rows on MCP23017 pins 0–5 */
+        row-gpios =
+            <&mcp23017 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+            <&mcp23017 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+            <&mcp23017 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+            <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+            <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+            <&mcp23017 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
     };
 };
 
-/* I²C + MCP23017 (no interrupts used) */
+
 &i2c0 {
     status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
 
     mcp23017: mcp23017@20 {
         compatible = "microchip,mcp23017";
         status = "okay";
+
+        /* This makes it a GPIO controller Zephyr understands */
         gpio-controller;
         #gpio-cells = <2>;
+        ngpios = <16>;
         reg = <0x20>;
+        label = "MCP23017_IO";
     };
 };
