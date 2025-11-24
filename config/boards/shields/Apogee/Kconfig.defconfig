@@ -1,2 +1,8 @@
+# Shield-specific defaults for Apogee keyboard
+
 config ZMK_KEYBOARD_NAME
     default "Apogee Keyboard"
+
+# Enable the I2C-based MCP230xx GPIO expander driver
+config GPIO_MCP230XX
+    default y
