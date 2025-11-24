@@ -28,7 +28,6 @@
     };
 
     /* GPIO matrix scanner using MCP23017 rows + nice!nano columns */
-    / {
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN";
@@ -62,7 +61,6 @@
             <&mcp23017 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
     };
 };
-
 
 &i2c0 {
     status = "okay";
