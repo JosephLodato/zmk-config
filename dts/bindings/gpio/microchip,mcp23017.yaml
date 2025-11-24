@@ -13,7 +13,7 @@ include:
 properties:
   label:
     type: string
-    required: true
+    required: true 
     description: Human readable name for this MCP23017 instance.
 
   "#gpio-cells":
@@ -29,3 +29,6 @@ properties:
 gpio-cells:
   - pin
   - flags
+
+
+
