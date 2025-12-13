@@ -16,22 +16,12 @@ config ZMK_BLE
 config I2C
     default y
 
-# MCP23017 GPIO expander
-config GPIO_MCP23017
-    default y
-
 # OLED Display
 config ZMK_DISPLAY
-    select LV_USE_CONT
     select LV_FONT_MONTSERRAT_26
 
 if ZMK_DISPLAY
 
-config SSD1306
-    default y
-
-config SSD1306_REVERSE_MODE
-    default y
 
 config LV_Z_VDB_SIZE
     default 64
@@ -50,9 +40,6 @@ endif # ZMK_DISPLAY
 
 # Encoder support
 config EC11
-    default y
-
-config EC11_TRIGGER_GLOBAL_THREAD
     default y
 
 endif # SHIELD_APOGEE
