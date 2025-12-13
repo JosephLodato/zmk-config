@@ -7,6 +7,27 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+/* 
+ * Override I2C0 pins to P0.06 (SDA) and P0.08 (SCL)
+ * This must come before the i2c0 device configuration
+ */
+&pinctrl {
+    i2c0_default: i2c0_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 8)>;
+        };
+    };
+
+    i2c0_sleep: i2c0_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 8)>;
+            low-power-enable;
+        };
+    };
+};
+
 / {
     model = "Apogee";
     compatible = "apogee";
@@ -106,7 +127,7 @@
             ;
     };
 
-    /* RGB LED indicator (accent LED, active low through level shifter) */
+    /* RGB LED indicator (accent LED) */
     leds {
         compatible = "gpio-leds";
         led_blue: led_blue {
@@ -121,9 +142,12 @@
     };
 };
 
-/* I2C bus configuration on P0.06 (SDA) and P0.08 (SCL) */
+/* I2C bus configuration with custom pins */
 &i2c0 {
     status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
 
     mcp23017: mcp23017@20 {
         compatible = "microchip,mcp23017";
