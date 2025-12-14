@@ -168,8 +168,7 @@
         display-offset = <0>;
         multiplex-ratio = <63>;
         prechargep = <0x22>;
-        segment-remap;
-        com-invdir;
+        /* segment-remap and com-invdir removed to flip display 180° */
         com-sequential;
     };
 };
