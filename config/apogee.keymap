@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  *
  * Apogee Keyboard Keymap
+ * Full 16x5 matrix - 16 bindings per row
  */
 
 #include <behaviors.dtsi>
@@ -14,7 +15,6 @@
 #define FN      1
 #define NAV     2
 
-/* Layer cycle behavior for the Layer Sel key */
 / {
     behaviors {
         layer_cycle: layer_cycle {
@@ -30,55 +30,41 @@
 
         default_layer {
             display-name = "Base";
-            // ┌─────────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────────┬─────┐
-            // │ENC1_PUSH│ ESC │  1  │  2  │  3  │  4  │  5  │  6  │  7  │  8  │  9  │  0  │  -  │  =  │BACKSPACE│ DEL │
-            // ├─────────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────────┼─────┤
-            // │ENC2_PUSH│ TAB │  Q  │  W  │  E  │  R  │  T  │  Y  │  U  │  I  │  O  │  P  │  [  │  ]  │    \    │ M1  │
-            // ├─────────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┴─────────┼─────┤
-            // │ENC3_PUSH│CAPS │  A  │  S  │  D  │  F  │  G  │  H  │  J  │  K  │  L  │  ;  │  '  │     ENTER     │ M2  │
-            // ├─────────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┴───────┬───────┼─────┤
-            // │LAYER_SEL│SHIFT│  Z  │  X  │  C  │  V  │  B  │  N  │  M  │  ,  │  .  │  /  │    SHIFT    │  UP   │ M3  │
-            // ├─────────┼─────┼─────┼─────┼─────┴─────┴─────┴─────┴─────┼─────┼─────┼─────┼─────┬───────┼───────┤─────┤
-            // │         │CTRL │ WIN │ ALT │            SPACE            │ FN  │ WIN │CTRL │LEFT │ DOWN  │ RIGHT │     │
-            // └─────────┴─────┴─────┴─────┴─────────────────────────────┴─────┴─────┴─────┴─────┴───────┴───────┴─────┘
-            bindings = 
+            // 16 Cols x 5 Rows - All rows have exactly 16 bindings
+            // C0        C1        C2        C3        C4        C5        C6        C7        C8        C9        C10       C11       C12       C13       C14       C15
+            bindings = <
                 // Row 0
                 &kp C_PP    &kp ESC   &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS &kp EQUAL &kp BSPC  &kp DEL
-                
                 // Row 1
                 &kp C_MUTE  &kp TAB   &kp Q     &kp W     &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P     &kp LBKT  &kp RBKT  &kp BSLH  &kp F13
-                
-                // Row 2 (15 keys - col14 empty)
-                &kp C_NEXT  &kp CAPS  &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SEMI  &kp SQT   &none     &kp RET   &kp F14
-                
-                // Row 3 (15 keys - col14 empty)
+                // Row 2
+                &kp C_NEXT  &none     &kp CAPS  &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SEMI  &kp SQT   &kp RET   &kp F14
+                // Row 3
                 &layer_cycle &none    &kp LSHFT &kp Z     &kp X     &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT &kp UP    &kp F15
-                
-                // Row 4 (10 keys - sparse)
-                &none      &kp LCTRL  &kp LGUI &kp LALT &none &none &none           &kp SPACE  &none &none          &mo FN    &kp RGUI  &kp RCTRL &kp LEFT  &kp DOWN  &kp RIGHT
+                // Row 4
+                &none       &kp LCTRL &kp LGUI  &kp LALT  &none     &none     &none     &kp SPACE &none     &none     &mo FN    &kp RGUI  &kp RCTRL &kp LEFT  &kp DOWN  &kp RIGHT
             >;
 
             sensor-bindings = <
-                &inc_dec_kp C_VOL_UP C_VOL_DN    // Encoder 1: Volume
-                &inc_dec_kp C_VOL_UP C_VOL_DN    // Encoder 2: Volume (placeholder)
-                &inc_dec_kp C_VOL_UP C_VOL_DN    // Encoder 3: Volume (placeholder)
+                &inc_dec_kp C_VOL_UP C_VOL_DN
+                &inc_dec_kp C_VOL_UP C_VOL_DN
+                &inc_dec_kp C_VOL_UP C_VOL_DN
             >;
         };
 
         fn_layer {
             display-name = "FN";
-            // Function layer: F-keys on number row, media controls, BT controls
             bindings = <
                 // Row 0
                 &kp C_PP    &kp GRAVE &kp F1    &kp F2    &kp F3    &kp F4    &kp F5    &kp F6    &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12   &kp DEL   &kp INS
                 // Row 1
-                &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &kp PSCRN &kp SLCK  &kp PAUSE_BREAK &trans    &trans
+                &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &kp PSCRN &kp SLCK  &kp PAUSE_BREAK &trans &trans
                 // Row 2
-                &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans              &trans
+                &trans      &none     &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
                 // Row 3
-                &to DEFAULT &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &kp PG_UP           &trans
+                &to DEFAULT &none     &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &kp PG_UP &trans
                 // Row 4
-                &trans      &trans    &trans              &trans              &trans    &trans    &trans    &kp HOME  &kp PG_DN &kp END
+                &none       &trans    &trans    &trans    &none     &none     &none     &trans    &none     &none     &trans    &trans    &trans    &kp HOME  &kp PG_DN &kp END
             >;
 
             sensor-bindings = <
@@ -90,24 +76,23 @@
 
         nav_layer {
             display-name = "Nav";
-            // Navigation and Bluetooth layer
             bindings = <
                 // Row 0
                 &trans      &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans &trans &trans &trans &trans &trans &trans &bootloader &sys_reset
                 // Row 1
                 &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &out OUT_TOG &trans &trans &trans &trans &trans
                 // Row 2
-                &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans              &trans
+                &trans      &none     &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
                 // Row 3
-                &to DEFAULT &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans              &trans
+                &to DEFAULT &none     &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
                 // Row 4
-                &trans      &trans    &trans              &trans              &trans    &trans    &trans    &trans    &trans    &trans
+                &none       &trans    &trans    &trans    &none     &none     &none     &trans    &none     &none     &trans    &trans    &trans    &trans    &trans    &trans
             >;
 
             sensor-bindings = <
-                &inc_dec_kp C_BRI_UP C_BRI_DN    // Encoder 1: Brightness
-                &inc_dec_kp C_VOL_UP C_VOL_DN    // Encoder 2: Volume
-                &inc_dec_kp C_VOL_UP C_VOL_DN    // Encoder 3: Volume
+                &inc_dec_kp C_BRI_UP C_BRI_DN
+                &inc_dec_kp C_VOL_UP C_VOL_DN
+                &inc_dec_kp C_VOL_UP C_VOL_DN
             >;
         };
     };
