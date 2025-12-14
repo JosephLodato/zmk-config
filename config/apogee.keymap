@@ -49,7 +49,7 @@
                 // Row 2 (15 keys - col14 empty)
                 &none &kp C_NEXT  &kp CAPS  &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SEMI  &kp SQT   &kp RET             &kp F14
                 // Row 3 (15 keys - col14 empty)
-                &none &layer_cycle &kp LSHFT &kp Z    &kp X     &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT &kp UP              &kp F15
+                &layer_cycle &none &kp LSHFT &kp Z    &kp X     &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT &kp UP              &kp F15
                 // Row 4 (10 keys - sparse)
                 &kp LCTRL   &kp LGUI  &kp LALT            &kp SPACE           &mo FN    &kp RGUI  &kp RCTRL &kp LEFT  &kp DOWN  &kp RIGHT
             >;
