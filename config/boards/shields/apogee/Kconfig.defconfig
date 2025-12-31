@@ -16,7 +16,8 @@ config ZMK_BLE
 config I2C
     default y
 
-# Encoder support
+if # ZMK_DISPLAY
+
 config EC11
     default y
 
