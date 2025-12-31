@@ -30,6 +30,8 @@
 
         default_layer {
             display-name = "Base";
+            // 16 Cols x 5 Rows - All rows have exactly 16 bindings
+            // C0        C1        C2        C3        C4        C5        C6        C7        C8        C9        C10       C11       C12       C13       C14       C15
             bindings = <
                 // Row 0
                 &kp C_PP    &kp ESC   &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS &kp EQUAL &kp BSPC  &kp DEL
