@@ -167,11 +167,14 @@
         page-offset = <0>;
         display-offset = <0>;
         multiplex-ratio = <63>;
-        prechargep = <0x22>;
-        segment-remap;
-        com-invdir;
+        prechargep = <0x22>;  
+
         inversion-on;
     };
 };
 
 /*        com-sequential; */
+
+/*        segment-remap;  */
+/*        com-invdir;     */
+
