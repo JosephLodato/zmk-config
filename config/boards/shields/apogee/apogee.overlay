@@ -170,7 +170,8 @@
         prechargep = <0x22>;
         segment-remap;
         com-invdir;
-        com-sequential;
         inversion-on;
     };
 };
+
+/*        com-sequential; */
