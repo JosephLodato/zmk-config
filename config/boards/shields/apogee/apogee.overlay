@@ -35,7 +35,7 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,matrix-transform = &default_transform;
-        zephyr,display = &oled;
+        /* zephyr,display = &oled; */
     };
 
     /* 
@@ -145,6 +145,7 @@
 /* I2C bus configuration with custom pins */
 &i2c0 {
     status = "okay";
+    clock-frequency = <400000>;
     pinctrl-0 = <&i2c0_default>;
     pinctrl-1 = <&i2c0_sleep>;
     pinctrl-names = "default", "sleep";
@@ -161,6 +162,8 @@
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
+        status = "disabled";
+        /*
         width = <128>;
         height = <64>;
         segment-offset = <0>;
@@ -169,7 +172,7 @@
         multiplex-ratio = <63>;
         prechargep = <0x22>;  
 
-        inversion-on;
+        inversion-on; */ 
     };
 };
 
