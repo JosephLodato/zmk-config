@@ -7,3 +7,4 @@
 include:
   - board: nice_nano//zmk
     shield: apogee
+    snippet: zmk-usb-logging
